@@ -9,7 +9,6 @@ def p(message,x):
     i = 0;
     for m in message:
         num = F(ord(m))
-        print (num,x)
         ret += (num*(x**i))
         i += 1
     return ret
