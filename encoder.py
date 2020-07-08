@@ -1,20 +1,25 @@
+#create finite field
+F = GF(29)
+
 #define a1,...,an
-arr = [1, 2, 3, 4]
+eval_points = [F(x) for x in 1, 2, 3, 4]
 
 def p(message,x):
     ret = 0;
     i = 0;
     for m in message:
-        ret += (int(m)*(x**i))
+        num = F(ord(m))
+        print (num,x)
+        ret += (num*(x**i))
         i += 1
     return ret
 
-def e(message):
+def encode(message):
     ret = []
-    for a in arr:
+    for a in eval_points:
         ret.append(p(message, a))
     return ret
 
 #encode message
-res = e('012')
+res = encode('test')
 print(res)
