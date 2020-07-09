@@ -1,5 +1,5 @@
 #create finite field
-F = GF(29)
+F = GF(53)
 
 #define a1,...,an
 eval_points = [F(x) for x in 1, 2, 3, 4]
