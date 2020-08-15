@@ -1,3 +1,6 @@
+import math
+import random
+
 #create finite field
 F = GF(53)
 
