@@ -12,19 +12,27 @@ T.<x> = F[]
 # Encoder
 
 def encode(message, n):
-    poly = makePoly(message)
+    convertedMessage = stringToIntArray(message)
+    poly = makePoly(convertedMessage)
     encoded = [poly(a) for a in range(n)]
     return encoded
 
-def makePoly(message):
-    poly = T([char_to_int(i) for i in list(message)])
+def makePoly(convertedMessage):
+    poly = T([i for i in convertedMessage])
     return poly
 
-def char_to_int(c):
-    if(ord('a') <= ord(c) & ord(c) <= ord('z')):
-        return ord(c) - ord('a') + 1                # a = 1, z = 26
-    if(ord('A') <= ord(c) & ord(c) <= ord('Z')):
-        return ord(c) - ord('A') + 27               # A = 27, Z = 52
+def stringToIntArray(word):
+    convertedWord = []
+    for c in list(word):
+        if(ord('a') <= ord(c) & ord(c) <= ord('z')):
+            convertedWord.append(ord(c) - ord('a') + 1)
+        elif(ord('A') <= ord(c) & ord(c) <= ord('Z')):
+            convertedWord.append(ord(c) - ord('A') + 27)
+        else:
+            print('Invalid char in message!')
+            print('message can contain only letters')
+            return []
+    return convertedWord
 
 # Decoder
 
@@ -86,19 +94,21 @@ def wordsFromPolynoms(pols):
         coef = list(pol)[0].coefficients()
         # keep the original order of coefficients
         coef.reverse()
-        word = numbersToChars(coef)
+        word = intArrayToString(coef)
         words_list.append([word])
     return words_list
 
-def numbersToChars(word):
+def intArrayToString(word):
     ret = ""
     for num in word:
-        ret = ret + intToChar(num)
+        num = int(num)
+        if(1 <= num & num <= 26 ):
+            ret = ret + chr(num + 96)
+        elif(27 <= num & num <= 52 ):
+            ret = ret + chr(num + 96)
+        else:
+            print('numbersToChars: invalid number')
     return ret
-
-def intToChar(num):
-    num = int(num)
-    return chr(num + 96)
 
 def experiment(n, message, numOfErrors):
     # Check parameters
