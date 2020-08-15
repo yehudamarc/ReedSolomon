@@ -101,6 +101,10 @@ def intToChar(num):
     return chr(num + 96)
 
 def experiment(n, message, numOfErrors):
+    # Check parameters
+    if numOfErrors > len(message) :
+        print ('number of errors cannot be greater that length of meesage')
+        return
     # call the encoder
     print "Encoder is called with n=",n, ", message=",message
     resultEncoder = encode(message, n)
@@ -113,10 +117,9 @@ def experiment(n, message, numOfErrors):
         while len(errorArr) < numOfErrors :
             l = range(0,len(message))
             i = random.choice(l)
-            if i not in errorArr:
-                errorArr.append(i)
-                print (errorArr)
-        for j in range(0, numOfErrors):
+            l.remove(i)
+            errorArr.append(i)
+        for j in range(0, len(errorArr)):
             curr = errorArr[j]
             resultWithErrors[curr] = random.choice(range(0,52))
     print(resultWithErrors)
@@ -133,5 +136,6 @@ def experiment(n, message, numOfErrors):
 # Experiements
 def main():
     experiment(10 , 'test', 0)
+    experiment(10 , 'test', 1)
 
 main()
