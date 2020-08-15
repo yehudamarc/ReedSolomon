@@ -108,7 +108,7 @@ def experiment(n, message, numOfErrors):
     if numOfErrors > 0 :
         errorArr = []
         while len(errorArr) < numOfErrors :
-            l = range(0,numOfErrors)
+            l = range(0,len(message))
             i = random.choice(l)
             if i not in errorArr:
                 errorArr.append(i)
