@@ -57,7 +57,7 @@ def interpolate(n , k, eval_points, y_array):
     kernel_vectors = m.right_kernel_matrix(basis='computed')
 
     number_of_rows = len(kernel_vectors.rows())
-    bivariant_polinomyals_array = [x+y for i in range(number_of_rows + 1)]
+    bivariant_polinomyals_array = []
 
     # Create the corresponding bivariant polynomials
     for num in range(number_of_rows):
@@ -69,13 +69,14 @@ def interpolate(n , k, eval_points, y_array):
             for j in range(deg_y+1):
                 f += vector[index_counter]*(x^i)*(y^j)
                 index_counter += 1
-        bivariant_polinomyals_array[num] = f
+        bivariant_polinomyals_array.append(f)
         if (index_counter == 1):
             min_pol = f
-        min_pol = f.gcd(min_pol)
-    bivariant_polinomyals_array[number_of_rows] = min_pol
+        gcd_pol = f.gcd(min_pol)
+        if (gcd_pol != 1):
+            min_pol = gcd_pol
+    bivariant_polinomyals_array.append(min_pol)
     return bivariant_polinomyals_array
-
 
 def selectiveFactoring(Interpolation_polynomails):
     filtered_pols = []
