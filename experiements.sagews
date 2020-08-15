@@ -81,16 +81,14 @@ def wordsFromPolynoms(pols):
     words_list = []
     for pol in pols:
         coef = list(pol)[0].coefficients()
-        word = []
-        for num in coef:
-            word.append([num])
-        word = numbersToChars(word)
+        # keep the original order of coefficients
+        coef.reverse()
+        word = numbersToChars(coef)
         words_list.append([word])
     return words_list
 
 def numbersToChars(word):
-    ret =""
-    word = flatten(word)
+    ret = ""
     for num in word:
         ret = ret + intToChar(num)
     return ret
@@ -99,17 +97,38 @@ def intToChar(num):
     num = int(num)
     return chr(num + 96)
 
+def experiment(n, message, numOfErrors):
+    # call the encoder
+    print "Encoder is called with n=",n, ", message=",message
+    resultEncoder = encode(message, n)
+    print "Num of errors=",numOfErrors
+    resultWithErrors = resultEncoder
+    print (resultWithErrors)
+    # insert numOfErrors errors (only if numOfErrors > 0)
+    if numOfErrors > 0 :
+        errorArr = []
+        while len(errorArr) < numOfErrors :
+            l = range(0,numOfErrors)
+            i = random.choice(l)
+            if i not in errorArr:
+                errorArr.append(i)
+                print (errorArr)
+        for j in range(0, numOfErrors):
+            curr = errorArr[j]
+            resultWithErrors[curr] = random.choice(range(0,52))
+    print(resultWithErrors)
+    # call the decoder
+    resultDecoder = decode(resultWithErrors, len(message), n)
+    print ("Results of Decoder = ",resultDecoder)
+    # check if the original message is inside the list that was returned by the decoder
+    resultDecoder = flatten(resultDecoder)
+    if message in resultDecoder :
+        print "The message is found in the output of the decoder"
+    else:
+        print "The message is not found in the output of the decoder"
+
 # Experiements
 def main():
-    encode('test',4)
-    encode('test',5)
+    experiment(10 , 'test', 0)
 
-#encode('test',4)
-#encode('test',5)
-encode('test',10)
-#encode('test',15)
-print(' ')
-#decode(encode('test',4), 4 ,4)
-#decode(encode('test',5), 4 ,5)
-decode(encode('test',10), 4 ,10)
-#decode(encode('test',15), 4 ,15)
+main()
