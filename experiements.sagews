@@ -49,8 +49,8 @@ def interpolate(n , k, eval_points, y_array, F):
     R.<x,y> = F[]
     T.<x> = F[]
     # Define the matrix representing the linear progeam
-    deg_a = int(math.ceil(sqrt(k*n)))
-    deg_y = int(math.ceil(sqrt(n/k)))
+    deg_a = int(math.ceil(sqrt(n)))
+    deg_y = int(math.ceil(sqrt(n)))
     matrix_size = (deg_y+1)*(deg_a+1)
     m = matrix(F, n, matrix_size)
     for row in range(n):
@@ -144,31 +144,18 @@ def runExperiment(n, message, numOfErrors):
     R = sqrt((len(message)/n))
     print 'Error Correction Rate: ', round(float(1-R), 2)
     print 'errors/n rate: ', round(float(numOfErrors/n), 2)
-    #print 'k/n rate: ', round(float(len(message)/n), 2)
+    print 'k/n rate: ', round(float(len(message)/n), 2)
     print(' ')
 
 # Experiements
 def main():
-    # Experiment 1:
-    print('experiments with k = 1:')
-    print('')
+    # Experiment 6:
     runExperiment(1 , 'g', 0)
-    runExperiment(1 , 'g', 1)
-    runExperiment(5 , 'g', 0)
-    runExperiment(5 , 'g', 1)
     runExperiment(5 , 'g', 4)
-    runExperiment(5 , 'g', 5)
-    # Experiment 2:
-    print('experiments with k = 4:')
-    print('')
-    runExperiment(4 , 'test', 0)
+
     runExperiment(10 , 'test', 0)
-    runExperiment(10 , 'test', 1)
-    runExperiment(10 , 'test', 3)
-    runExperiment(15 , 'test', 4)
-    # Experiment 3:
-    print('experiments with k = 9:')
-    print('')
+    runExperiment(15 , 'test', 0)
+
     runExperiment(9 , 'guruswani', 0)
     runExperiment(20 , 'guruswani', 0)
     runExperiment(25 , 'guruswani', 0)
@@ -176,23 +163,20 @@ def main():
     runExperiment(30 , 'guruswani', 5)
     runExperiment(30 , 'guruswani', 10)
     runExperiment(50 , 'guruswani', 15)
-    # Experiment 4:
+
     runExperiment(1 , 't', 0)
     runExperiment(2 , 'te', 0)
     runExperiment(3 , 'tes', 0)
     runExperiment(6 , 'test', 0)
     runExperiment(7 , 'test', 0)
-    runExperiment(15 , 'testing', 0)
-    runExperiment(16 , 'testing', 0)
+    runExperiment(20 , 'testing', 0)
+    runExperiment(27 , 'testing', 0)
     runExperiment(60 , 'guruswaniSudanAlgorithm', 0)
-    runExperiment(61 , 'guruswaniSudanAlgorithm', 0)
-    #Experiment 5:
+    runExperiment(90 , 'guruswaniSudanAlgorithm', 0)
+
     runExperiment(10 , 'word', 1)
-    runExperiment(10 , 'word', 2)
     runExperiment(25 , 'word', 14)
-    runExperiment(25 , 'word', 18)
     runExperiment(50 , 'word', 40)
-    runExperiment(50 , 'word', 45)
     runExperiment(100 , 'word', 95)
     runExperiment(100 , 'word', 99)
 
