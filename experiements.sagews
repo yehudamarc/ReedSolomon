@@ -1,25 +1,26 @@
 import math
 import random
 
-#create finite field
-F = GF(53)
-
-# Create polynomial ring
-R.<x,y> = F[]
-T.<x> = F[]
-
+# Create finite field
+def createField(n):
+    if (n < 53):
+        print('the field size is: ', 53)
+        return GF(53)
+    P = Primes()
+    next_prime = P.next(n)
+    print('new field size is: ', next_prime)
+    return GF(next_prime)
 
 # Encoder
 
 def encode(message, n):
+    # Create finite field
+    F = createField(n)
+    T.<x> = F[]
     convertedMessage = stringToIntArray(message)
-    poly = makePoly(convertedMessage)
+    poly = T([i for i in convertedMessage])
     encoded = [poly(a) for a in range(n)]
     return encoded
-
-def makePoly(convertedMessage):
-    poly = T([i for i in convertedMessage])
-    return poly
 
 def stringToIntArray(word):
     convertedWord = []
@@ -37,13 +38,18 @@ def stringToIntArray(word):
 # Decoder
 
 def decode(encoded_message, k, n):
+    # Create finite field
+    F = createField(n)
     eval_points = [i for i in range(0,n)]
-    Interpolation_polynomails = interpolate(n, k, eval_points, encoded_message)
-    message_polynoms = selectiveFactoring(Interpolation_polynomails)
+    Interpolation_polynomails = interpolate(n, k, eval_points, encoded_message, F)
+    message_polynoms = selectiveFactoring(Interpolation_polynomails, F)
     decoded_message = wordsFromPolynoms(message_polynoms)
     return decoded_message
 
-def interpolate(n , k, eval_points, y_array):
+def interpolate(n , k, eval_points, y_array, F):
+    # Create polynomial ring
+    R.<x,y> = F[]
+    T.<x> = F[]
     # Define the matrix representing the linear progeam
     deg_a = int(math.ceil(sqrt(k*n)))
     deg_y = int(math.ceil(sqrt(n/k)))
@@ -53,7 +59,6 @@ def interpolate(n , k, eval_points, y_array):
         m[row] = [(eval_points[row]^i)*(y_array[row]^j) for i in range(deg_a +1) for j in range(deg_y+1)]
 
     # get kernel vectors - solutions for the linear program
-    #kernel_vectors = m.right_kernel_matrix()
     kernel_vectors = m.right_kernel_matrix(basis='computed')
 
     number_of_rows = len(kernel_vectors.rows())
@@ -70,15 +75,13 @@ def interpolate(n , k, eval_points, y_array):
                 f += vector[index_counter]*(x^i)*(y^j)
                 index_counter += 1
         bivariant_polinomyals_array.append(f)
-        if (index_counter == 1):
-            min_pol = f
-        gcd_pol = f.gcd(min_pol)
-        if (gcd_pol != 1):
-            min_pol = gcd_pol
-    bivariant_polinomyals_array.append(min_pol)
     return bivariant_polinomyals_array
 
-def selectiveFactoring(Interpolation_polynomails):
+
+def selectiveFactoring(Interpolation_polynomails, F):
+    # Create polynomial ring
+    R.<x,y> = F[]
+    T.<x> = F[]
     filtered_pols = []
     pols_number = len(Interpolation_polynomails)
     for i in range(pols_number):
@@ -106,9 +109,7 @@ def intArrayToString(word):
         if(1 <= num & num <= 26 ):
             ret = ret + chr(num + 96)
         elif(27 <= num & num <= 52 ):
-            ret = ret + chr(num + 96)
-        else:
-            print('numbersToChars: invalid number')
+            ret = ret + chr(num + 38)
     return ret
 
 def experiment(n, message, numOfErrors):
@@ -143,6 +144,7 @@ def experiment(n, message, numOfErrors):
         print "The message is found in the output of the decoder"
     else:
         print "The message is not found in the output of the decoder"
+    print(' ')
 
 # Experiements
 def main():
