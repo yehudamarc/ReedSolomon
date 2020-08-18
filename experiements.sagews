@@ -4,11 +4,9 @@ import random
 # Create finite field
 def createField(n):
     if (n < 53):
-        print('the field size is: ', 53)
         return GF(53)
     P = Primes()
     next_prime = P.next(n)
-    print('new field size is: ', next_prime)
     return GF(next_prime)
 
 # Encoder
@@ -112,43 +110,80 @@ def intArrayToString(word):
             ret = ret + chr(num + 38)
     return ret
 
-def experiment(n, message, numOfErrors):
-    # Check parameters
-    if numOfErrors > len(message) :
-        print ('number of errors cannot be greater that length of meesage')
-        return
+def runExperiment(n, message, numOfErrors):
+#    Check parameters
+#     if numOfErrors > len(message) :
+#         print ('number of errors cannot be greater that length of meesage')
+#         return
     # call the encoder
     print "Encoder is called with n=",n, ", message=",message
     resultEncoder = encode(message, n)
     print "Num of errors=",numOfErrors
     resultWithErrors = resultEncoder
-    print (resultWithErrors)
+    #print (resultWithErrors)
     # insert numOfErrors errors (only if numOfErrors > 0)
     if numOfErrors > 0 :
         errorArr = []
         while len(errorArr) < numOfErrors :
-            l = range(0,len(message))
+            l = range(0,n)
             i = random.choice(l)
             l.remove(i)
             errorArr.append(i)
         for j in range(0, len(errorArr)):
             curr = errorArr[j]
             resultWithErrors[curr] = random.choice(range(0,52))
-    print(resultWithErrors)
+    #print(resultWithErrors)
     # call the decoder
     resultDecoder = decode(resultWithErrors, len(message), n)
-    print ("Results of Decoder = ",resultDecoder)
-    # check if the original message is inside the list that was returned by the decoder
     resultDecoder = flatten(resultDecoder)
+    resultDecoder = set(resultDecoder)
+    print "Results of Decoder = ",resultDecoder
+    # check if the original message is inside the list that was returned by the decoder
     if message in resultDecoder :
-        print "The message is found in the output of the decoder"
+        print "Success: The message is found in the output of the decoder"
     else:
-        print "The message is not found in the output of the decoder"
+        print "Failure: The message is not found in the output of the decoder"
+    R = sqrt((len(message)/n))
+    print 'Error Correction Rate: ', round(float(1-R), 2)
+    print 'errors/n rate: ', round(float(numOfErrors/n), 2)
     print(' ')
 
 # Experiements
 def main():
-    experiment(10 , 'test', 0)
-    experiment(10 , 'test', 1)
+    # Experiment 1:
+     print('experiments with k = 1:')
+     print('')
+     runExperiment(1 , 'g', 0)
+     runExperiment(1 , 'g', 1)
+     runExperiment(5 , 'g', 0)
+     runExperiment(5 , 'g', 1)
+     runExperiment(5 , 'g', 4)
+     runExperiment(5 , 'g', 5)
+    # k = 4
+     print('experiments with k = 4:')
+     print('')
+     runExperiment(4 , 'test', 0)
+     runExperiment(10 , 'test', 0)
+     runExperiment(10 , 'test', 1)
+     runExperiment(10 , 'test', 3)
+     runExperiment(15 , 'test', 4)
+    # k = 9
+    print('experiments with k = 9:')
+    print('')
+    runExperiment(9 , 'guruswani', 0)
+    runExperiment(20 , 'guruswani', 0)
+    runExperiment(25 , 'guruswani', 0)
+    runExperiment(25 , 'guruswani', 1)
+    runExperiment(30 , 'guruswani', 5)
+    runExperiment(30 , 'guruswani', 10)
+    runExperiment(50 , 'guruswani', 15)
+    # k = 23
+    print('experiments with k = 23:')
+    print('')
+    runExperiment(23 , 'guruswaniSudanAlgorithm', 0)
+    runExperiment(50 , 'guruswaniSudanAlgorithm', 0)
+    runExperiment(100 , 'guruswaniSudanAlgorithm', 0)
+    runExperiment(100 , 'guruswaniSudanAlgorithm',10)
+    runExperiment(100 , 'guruswaniSudanAlgorithm',15)
 
 main()
